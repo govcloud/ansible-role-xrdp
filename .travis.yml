@@ -1,0 +1,24 @@
+---
+services: docker
+
+env:
+  # Defaults.
+  - distro: ubuntu1604
+    test_idempotence: false
+
+script:
+  # Configure test script so we can run extra tests after playbook is run.
+  - export container_id=$(date +%s)
+  - export cleanup=false
+
+  # Download test shim.
+  - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/sylus/e5d6eb8852d649ae78477b2daf86e707/raw
+  - chmod +x ${PWD}/tests/test.sh
+
+  # Run tests.
+  - ${PWD}/tests/test.sh
+
+notifications:
+  slack:
+    secure: OMR6Few3krr6Cs5hKRMCMmxuqZadVO/iEqh5MWTKFtH7vgUdd6Id1lAHDQ+Emg6TzJCo8JjNvjj39IbvaWLcOrwEgYQLycanRbzatk6xcS43hYjI//o8sVc2fVYGFcr4iNeiE0mrmNDr1Va9DTZ+EXhniTD8jyl3+dN3oQitjxGU5UgQMSygQUtdRsazKMrUXTuA/hDOSw9pc+8dSG3+OynK0uOHVwyrhHS6VVgJpsR4TN8vzubFOWwPImPNXdPeZkYXGXK0BeMwlAtj6iYGtC334jMBd/gYsX6lPS4Dw/ScGdxZBIUhKTidY0uZXQVJE1Zz/RVLG65pqKIioWvN5UtQLEc/KxBve78NoOTuDDVg2l12S4Czg3LbkvTdaQtyrXJ1dIOOBlOErtB3scLr4oybpe2IHNQCHyNY0DMSobSL1VKQyZU6zXp9Aghz/9QMw+FWsQejbXUhBltqncgxj19KH9l2W0YlQevRwjFUjkuJW2NSCbWjNNgONZt4Y/p27cZ8PcffmWnn1HgzgCkpJVo8JMdM6axjtZhpbUHvapg0gSTj1TJLSpagDramlS5i5C3bbjkwWndXbKZNUbl1jdwLBkn8ZoOm8Lv9eo2olKmOqLko7rr50ThlxG/6cutVYZdEq5QFVZBxUY0Km6ST/GNdImeJ4GRgttmr78uWkDM=
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
