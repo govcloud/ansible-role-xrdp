@@ -1,0 +1,34 @@
+---
+- name: Install epel
+  yum: name=epel-release state=latest
+
+- name: Install XRDP
+  yum: name=xrdp state=latest
+
+- name: Install TigerVNC
+  yum: name=tigervnc state=latest
+
+- name: Start xrdp
+  service:
+    name: xrdp
+    state: started
+    enabled: yes
+
+- name: global xsession file
+  become: yes
+  copy:
+    src: xsession
+    dest: /etc/skel/.xsession
+
+- name: restart xrdp service
+  become: yes
+  service:
+    name: xrdp
+    enabled: yes
+    state: restarted
+
+- name: upload xrdp.ini
+  become: yes
+  copy:
+    src: xrdp.ini
+    dest: /etc/xrdp/xrdp.ini

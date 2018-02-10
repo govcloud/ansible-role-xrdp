@@ -1,62 +1,6 @@
-- name: install desktop packages
-  apt:
-    name: "{{ item }}"
-    state: installed
-    update_cache: yes
-  become: yes
-  with_items:
-    - ubuntu-desktop
-    - xrdp
-    - xfce4
-    - xfce4-goodies
+---
+- include: el.yml
+  when: ansible_os_family == 'RedHat'
 
-- name: current local user
-  run_once: True
-  set_fact:
-    ansible_local_user: "{{ lookup('pipe', 'id -un') | d(lookup('pipe', 'whoami'), True) | d(lookup('env', 'USER'), True) |  d(lookup('env', 'user'), True) |  d(lookup('env', 'LOGNAME'), True) }}"
-  failed_when: ansible_local_user == ''
-
-- name: home xsession file
-  copy:
-    src: xsession
-    dest: ~/.xsession
-    owner: "{{ ansible_local_user }}"
-    group: "{{ ansible_local_user }}"
-
-- name: global xsession file
-  become: yes
-  copy:
-    src: xsession
-    dest: /etc/skel/.xsession
-
-- name: restart xrdp service
-  become: yes
-  service:
-    name: xrdp
-    enabled: yes
-    state: restarted
-
-- name: upload xrdp.ini
-  become: yes
-  copy:
-    src: xrdp.ini
-    dest: /etc/xrdp/xrdp.ini
-
-- name: upload sshd_config
-  become: yes
-  copy:
-    src: sshd_config
-    dest: /etc/ssh/sshd_config
-
-- name: Restart ssh service
-  become: yes
-  shell: sleep 3; systemctl restart sshd
-  async: 1
-  poll: 0
-
-- name: setup password for default user
-  become: yes
-  user:
-    name: "{{ ansible_local_user }}"
-    password: "{{ ubuntu_password }}"
-    update_password: always
+- include: debian.yml
+  when: ansible_os_family == 'Debian'
