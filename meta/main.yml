@@ -8,12 +8,7 @@ galaxy_info:
   - name: EL
     versions:
       - 7
-  - name: Ubuntu
-    versions:
-      - all
   galaxy_tags:
     - remote-dektop
     - centos
-    - ubuntu
     - rdp
-    - xfce4
