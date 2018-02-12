@@ -1,12 +1,23 @@
 ---
-- name: Install epel
-  yum: name=epel-release state=latest
+- name: Install epel repository
+  yum:
+    name: epel-release
+    state: latest
+
+- name: Add necessary repository
+  yum:
+    name: http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+    state: present
 
 - name: Install XRDP
-  yum: name=xrdp state=latest
+  yum:
+    name: xrdp
+    state: latest
 
 - name: Install TigerVNC
-  yum: name=tigervnc state=latest
+  yum:
+    name: tigervnc
+    state: latest
 
 - name: Start xrdp
   service:
@@ -32,3 +43,15 @@
   copy:
     src: xrdp.ini
     dest: /etc/xrdp/xrdp.ini
+
+- name: upload xrdp_keyboard.ini
+  become: yes
+  copy:
+    src: xrdp_keyboard.ini
+    dest: /etc/xrdp/xrdp_keyboard.ini
+
+- name: upload sesman.ini
+  become: yes
+  copy:
+    src: sesman.ini
+    dest: /etc/xrdp/sesman.ini
